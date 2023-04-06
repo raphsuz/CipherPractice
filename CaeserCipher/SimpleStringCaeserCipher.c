@@ -11,11 +11,12 @@ int main(){
     char text[128] = {'\0'};
     // 存放加密後字串
     char cryptograph[128] = {'\0'};
+    int keyvector = 0;
 
     // 進入功能選單    
     while (1){
         // 功能引導文字
-        printf("此爲簡易訊息加密程式，旨在實現古典加密演算法 - 維吉尼亞密碼\n");
+        printf("此爲簡易訊息加密程式，旨在實現古典加密演算法 - 凱撒密碼\n");
         printf("請輸入數字以進行本程式的功能：\n");
         printf("輸入數字「1」：將明文訊息加密，呈現加密後訊息。\n");
         printf("輸入數字「2」：對功能1的加密訊息進行解密，呈現明文訊息。\n");
@@ -26,11 +27,15 @@ int main(){
         if (result == 1){
             printf("請輸入要傳送的明文訊息： \n");
             scanf("%s", &text);
+            printf("請輸入加密偏移量（正整數）： \n");
+            scanf("%d", &keyvector);
             string_count = strlen(text);
             for (i = 0; i < string_count; i++) {
-                // 維吉尼亞加密法 - 該字於表上的位置如果爲 i，則偏移 (i+5) 
-                cryptograph[i] = text[i] + i + 5;
-            }
+                // 凱撒加密法 - 小寫字母偏移處理
+                if (text[i] >= 'a' && text[i] <= 'z') {cryptograph[i] = ((text[i] - 'a') + keyvector) % 26 + 'a';}
+                // 凱撒加密法 - 大寫字母偏移處理
+                else {cryptograph[i] = ((text[i] - 'A') + keyvector) % 26 + 'A';}
+                }
             cryptograph[i] = '\0';
             printf("進行加密後得到密文訊息：%s \n\n", cryptograph);
         }
@@ -38,8 +43,10 @@ int main(){
         else if (result == 2){
                 string_count = strlen(text);
                 for (i = 0; i < string_count; i++) {
-                    // 維吉尼亞加密法 - 解密時將還原偏移位置 
-                    text[i] = cryptograph[i] - i - 5;                    
+                // 凱撒加密法 - 小寫字母偏移處理
+                if (cryptograph[i] >= 'a' && cryptograph[i] <= 'z') {cryptograph[i] = ((cryptograph[i] - 'a') - keyvector) % 26 + 'a';}
+                // 凱撒加密法 - 大寫字母偏移處理
+                else {text[i] = ((cryptograph[i] - 'A') - keyvector) % 26 + 'A';}                   
                 }
                 text[i] = '\0';
                 printf("進行解密取得明文訊息：%s \n\n", text);
